@@ -1,0 +1,65 @@
+version: '3.11'
+
+services:
+
+  shop_web:
+    build:
+      context: .
+      dockerfile: docker/shop/Dockerfile
+    container_name: shop_web
+    command: python manage.py runserver 0.0.0.0:8000
+    environment:
+      - DB_NAME=shop_db
+      - DB_PORT=5432
+    env_file:
+      - shop/.env
+    ports:
+      - '8000:8000'
+    volumes:
+      - ./shop/:/shop
+    depends_on:
+      - db_shop
+
+  warehouse_web:
+    build:
+      context: .
+      dockerfile: docker/warehouse/Dockerfile
+    container_name: warehouse_web
+    command: python manage.py runserver 0.0.0.0:8001
+    environment:
+      - DB_NAME=warehouse_db
+      - DB_PORT=5432
+    env_file:
+      - warehouse/.env
+    ports:
+      - '8001:8001'
+    volumes:
+      - ./warehouse/:/warehouse
+    depends_on:
+      - db_warehouse
+
+  db_shop:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_DB=shop_db
+      - POSTGRES_USER=shop_admin
+      - POSTGRES_PASSWORD=shop_admin
+    volumes:
+      - shop-database-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  db_warehouse:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_DB=warehouse_db
+      - POSTGRES_USER=warehouse_admin
+      - POSTGRES_PASSWORD=warehouse_admin
+    volumes:
+      - warehouse-database-data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+
+volumes:
+  shop-database-data:
+  warehouse-database-data:
