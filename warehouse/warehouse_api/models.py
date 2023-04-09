@@ -1,27 +1,35 @@
 from django.db import models
-
+# from shop.shop_app.models import Order as ShopOrder
 
 class Book(models.Model):
     title = models.CharField(max_length=120)
     author = models.CharField(max_length=120)
     summary = models.TextField()
-    price = models.DecimalField()
+    price = models.DecimalField(max_digits=10, decimal_places=2)
 
 
 class BookItem(models.Model):
-    book_id = models.OneToOneField("Book", on_delete=models.CASCADE)
+    book_id = models.OneToOneField(Book, on_delete=models.CASCADE)
     # place = ... maybe added ...
 
+
 class Order(models.Model):
+    STATUS_CHOICE = (
+        ('in_work', 'In work'),
+        ('success', 'Success'),
+        ('Fail', 'fail'),
+    )
+
     user_email = models.EmailField()
-    status = models.CharField()
+    status = models.CharField(choices=STATUS_CHOICE, max_length=10)
     delivery_adress = models.CharField(max_length=320)
     # order_id_in_shop = models.OneToOneField() # app shop not create yet
+    # order_in_shop = models.ForeignKey(ShopOrder, on_delete=models.CASCADE, related_name='warehouse_orders')
 
 
 class OrderItem(models.Model):
-    order_id = models.OneToOneField("Order", on_delete=models.CASCADE)
-    book_warehouse_id = models.OneToOneField("Book", on_delete=models.CASCADE)
+    order_id = models.OneToOneField(Order, on_delete=models.CASCADE)
+    book_warehouse_id = models.OneToOneField(Book, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField()
 
 
