@@ -11,6 +11,7 @@ services:
     environment:
       - DB_NAME=shop_db
       - DB_PORT=5432
+      - PYTHONPATH=/app/warehouse
     env_file:
       - shop/.env
     ports:
@@ -18,7 +19,7 @@ services:
     networks:
       - web-network
     volumes:
-      - ./shop/:/shop
+      - ./shop/:/app/shop
     depends_on:
       - db_shop
 
@@ -31,6 +32,7 @@ services:
     environment:
       - DB_NAME=warehouse_db
       - DB_PORT=5432
+      - PYTHONPATH=/app/shop
     env_file:
       - warehouse/.env
     ports:
@@ -38,7 +40,7 @@ services:
     networks:
       - web-network
     volumes:
-      - ./warehouse/:/warehouse
+      - ./warehouse/:/app/warehouse
     depends_on:
       - db_warehouse
 
