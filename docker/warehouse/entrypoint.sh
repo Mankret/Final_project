@@ -1,5 +1,6 @@
 #!/bin/sh
 
+ls /api/warehouse
 set -e
 
 if [ "$DATABASE" = "postgres" ]

@@ -1,5 +1,6 @@
 #!/bin/sh
 
+ls /app/shop
 set -e
 
 if [ "$DATABASE" = "postgres" ]
